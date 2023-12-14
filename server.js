@@ -459,4 +459,8 @@ app.post('/calculate', async (req, res) => {
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 96c90492cc15ceab948f1be7ce135ae159840ae4
