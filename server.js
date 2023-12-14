@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const puppeteer = require('puppeteer');
 const app = express();
+const cors = require('cors'); // Added for CORS support
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -458,4 +460,3 @@ const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
