@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const pdf = require('html-pdf');
+const playwright = require('playwright'); // Make sure to include this line
 const app = express();
 const cors = require('cors');
 
@@ -26,6 +26,7 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
         {
           filename: 'VisaEstimation.pdf',
           content: pdfBuffer,
+          encoding: 'base64',
         },
       ],
     });
@@ -37,17 +38,17 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
 }
 
 async function generatePDF(htmlContent) {
-  return new Promise((resolve, reject) => {
-    pdf.create(htmlContent).toBuffer((err, buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(buffer);
-      }
-    });
-  });
-}
+  const browser = await playwright.chromium.launch({
+    executablePath: 'C:\\Users\\Hitesh Mansinghani\\AppData\\Local\\ms-playwright\\chromium-1091\\chrome-win\\chrome.exe'
+});  const page = await browser.newPage();
 
+  await page.setContent(htmlContent);
+  const pdfBuffer = await page.pdf();
+
+  await browser.close();
+
+  return pdfBuffer;
+}
 
 function calculateVisaCost(includeSpouse, numberOfChildren, isExpedited, legalFees, companyLicenseFee, registeredAdviceFees, accountsFee) {
   const applicationFee = 259;
