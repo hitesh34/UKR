@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer');
 const playwright = require('playwright'); // Make sure to include this line
 const app = express();
 const cors = require('cors');
+const { chromium } = require('playwright');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
