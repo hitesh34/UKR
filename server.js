@@ -1,11 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-<<<<<<< HEAD
 const { chromium } = require('playwright');
-=======
-const puppeteer = require('puppeteer-core'); // Use puppeteer-core instead of puppeteer
->>>>>>> e938a58f2c80aba21b7aa4f7071eea50c45a3965
 const app = express();
 const cors = require('cors');
 
@@ -42,16 +38,8 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
 }
 
 async function generatePDF(htmlContent) {
-<<<<<<< HEAD
   const browser = await chromium.launch();
   const page = await browser.newPage();
-=======
-  const browser = await puppeteer.launch({
-    headless: "new",
-    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  });
-    const page = await browser.newPage();
->>>>>>> e938a58f2c80aba21b7aa4f7071eea50c45a3965
 
   await page.setContent(htmlContent);
   const pdfBuffer = await page.pdf();
