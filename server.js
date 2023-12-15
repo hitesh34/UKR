@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const pdf = require('html-pdf');
+const puppeteer = require('puppeteer-core'); // Use puppeteer-core instead of puppeteer
 const app = express();
-const cors = require('cors'); // Added for CORS support
+const cors = require('cors');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -37,16 +37,16 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
   }
 }
 
-function generatePDF(htmlContent) {
-  return new Promise((resolve, reject) => {
-    pdf.create(htmlContent).toBuffer((err, buffer) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(buffer);
-      }
-    });
-  });
+async function generatePDF(htmlContent) {
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] }); // Use puppeteer-core with --no-sandbox
+  const page = await browser.newPage();
+
+  await page.setContent(htmlContent);
+  const pdfBuffer = await page.pdf();
+
+  await browser.close();
+
+  return pdfBuffer;
 }
 
 function calculateVisaCost(includeSpouse, numberOfChildren, isExpedited, legalFees, companyLicenseFee, registeredAdviceFees, accountsFee) {
@@ -438,7 +438,7 @@ app.post('/calculate', async (req, res) => {
     console.error('Error: ', error);
     res.status(500).send('An error occurred during calculation and email sending.');
   }
-});
+}); 
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
