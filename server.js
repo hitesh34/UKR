@@ -37,6 +37,7 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
   }
 }
 
+<<<<<<< HEAD
 function generatePDF(htmlContent) {
   return new Promise((resolve, reject) => {
     pdf.create(htmlContent).toBuffer((err, buffer) => {
@@ -47,6 +48,34 @@ function generatePDF(htmlContent) {
       }
     });
   });
+=======
+async function generatePDF(htmlContent) {
+  const browser = await puppeteer.launch({ headless: "new" });
+  const page = await browser.newPage();
+
+  const fullHTML = `
+    <html>
+      <head>
+        <title>Estimation Report</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+          }
+        </style>
+      </head>
+      <body>
+        ${htmlContent}
+      </body>
+    </html>
+  `;
+
+  await page.setContent(fullHTML);
+  const pdfBuffer = await page.pdf();
+
+  await browser.close();
+
+  return pdfBuffer;
+>>>>>>> 0e49ba1a310012b99fe493f88bc5491bb2ff7b34
 }
 
 function calculateVisaCost(includeSpouse, numberOfChildren, isExpedited, legalFees, companyLicenseFee, registeredAdviceFees, accountsFee) {
