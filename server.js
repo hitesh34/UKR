@@ -6,7 +6,6 @@ const { chromium } = require('playwright');
 
 const app = express();
 const cors = require('cors');
-const { chromium } = require('playwright');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
