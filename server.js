@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const { chromium } = require('playwright'); // Import chromium from playwright
-const app = express();
 const playwrightInstallation = require('child_process').spawn('npx', ['playwright', 'install'], {
   stdio: 'inherit',
 });
@@ -19,7 +18,6 @@ playwrightInstallation.on('exit', (code) => {
 
 function startServer() {
   const app = express();
-  const cors = require('cors');
 const cors = require('cors');
 
 app.use(bodyParser.urlencoded({ extended: true }));
