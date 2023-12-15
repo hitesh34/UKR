@@ -1,10 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const puppeteer = require('puppeteer');
+const pdf = require('html-pdf');
 const app = express();
 const cors = require('cors'); // Added for CORS support
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -38,33 +37,18 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
   }
 }
 
-async function generatePDF(htmlContent) {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-
-  const fullHTML = `
-    <html>
-      <head>
-        <title>Estimation Report</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-          }
-        </style>
-      </head>
-      <body>
-        ${htmlContent}
-      </body>
-    </html>
-  `;
-
-  await page.setContent(fullHTML);
-  const pdfBuffer = await page.pdf();
-
-  await browser.close();
-
-  return pdfBuffer;
+function generatePDF(htmlContent) {
+  return new Promise((resolve, reject) => {
+    pdf.create(htmlContent).toBuffer((err, buffer) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(buffer);
+      }
+    });
+  });
 }
+
 function calculateVisaCost(includeSpouse, numberOfChildren, isExpedited, legalFees, companyLicenseFee, registeredAdviceFees, accountsFee) {
   const applicationFee = 259;
   const healthcareSurcharge = 624;
@@ -442,7 +426,7 @@ app.post('/calculate', async (req, res) => {
       isExpedited,
       parsedCompanyLicenseFee,
       parsedRegisteredAdviceFees,
-      parsedAccountsFee, 
+      parsedAccountsFee,
     );
     const pdfBuffer = await generatePDF(htmlContent);
 
@@ -455,7 +439,6 @@ app.post('/calculate', async (req, res) => {
     res.status(500).send('An error occurred during calculation and email sending.');
   }
 });
-
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
