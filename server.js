@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const playwright = require('playwright'); // Make sure to include this line
+const { chromium } = require('playwright');
+
 const app = express();
 const cors = require('cors');
 const { chromium } = require('playwright');
