@@ -39,7 +39,7 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
 
 async function generatePDF(htmlContent) {
   const browser = await playwright.chromium.launch({
-    executablePath: 'C:\Program Files\Google\Chrome\Application\\chrome.exe'
+   executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe'
 });  const page = await browser.newPage();
 
   await page.setContent(htmlContent);
