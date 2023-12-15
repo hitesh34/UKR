@@ -40,7 +40,8 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
 }
 
 async function generatePDF(htmlContent) {
-  const browser = await playwright.chromium.launch();  const page = await browser.newPage();
+  const browser = await playwright.chromium.launch();
+  const page = await browser.newPage();
 
   await page.setContent(htmlContent);
   const pdfBuffer = await page.pdf();
