@@ -39,8 +39,10 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
 }
 
 async function generatePDF(htmlContent) {
-  const browser = await puppeteer.launch({ headless: "new" });
-  const page = await browser.newPage();
+const browser = await puppeteer.launch({
+    executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  }); 
+   const page = await browser.newPage();
 
   const fullHTML = `
     <html>
