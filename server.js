@@ -1,13 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-<<<<<<< HEAD
-const { chromium } = require('playwright');
-=======
-const puppeteer = require('puppeteer-core'); // Use puppeteer-core instead of puppeteer
->>>>>>> e938a58f2c80aba21b7aa4f7071eea50c45a3965
+const puppeteer = require('puppeteer');
 const app = express();
-const cors = require('cors');
+const cors = require('cors'); // Added for CORS support
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -42,25 +39,32 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
 }
 
 async function generatePDF(htmlContent) {
-<<<<<<< HEAD
-  const browser = await chromium.launch();
+  const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
-=======
-  const browser = await puppeteer.launch({
-    headless: "new",
-    executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  });
-    const page = await browser.newPage();
->>>>>>> e938a58f2c80aba21b7aa4f7071eea50c45a3965
 
-  await page.setContent(htmlContent);
+  const fullHTML = `
+    <html>
+      <head>
+        <title>Estimation Report</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+          }
+        </style>
+      </head>
+      <body>
+        ${htmlContent}
+      </body>
+    </html>
+  `;
+
+  await page.setContent(fullHTML);
   const pdfBuffer = await page.pdf();
 
   await browser.close();
 
   return pdfBuffer;
 }
-
 function calculateVisaCost(includeSpouse, numberOfChildren, isExpedited, legalFees, companyLicenseFee, registeredAdviceFees, accountsFee) {
   const applicationFee = 259;
   const healthcareSurcharge = 624;
@@ -438,7 +442,7 @@ app.post('/calculate', async (req, res) => {
       isExpedited,
       parsedCompanyLicenseFee,
       parsedRegisteredAdviceFees,
-      parsedAccountsFee,
+      parsedAccountsFee, 
     );
     const pdfBuffer = await generatePDF(htmlContent);
 
@@ -450,7 +454,7 @@ app.post('/calculate', async (req, res) => {
     console.error('Error: ', error);
     res.status(500).send('An error occurred during calculation and email sending.');
   }
-}); 
+});
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
