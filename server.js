@@ -1,24 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const { chromium } = require('playwright'); // Import chromium from playwright
-const playwrightInstallation = require('child_process').spawn('npx', ['playwright', 'install'], {
-  stdio: 'inherit',
-});
+const puppeteer = require('puppeteer');
+const app = express();
+const cors = require('cors'); // Added for CORS support
 
-playwrightInstallation.on('exit', (code) => {
-  if (code !== 0) {
-    console.error('Failed to install Playwright. Exiting...');
-    process.exit(1);
-  }
-
-  // Continue with your application
-  startServer();
-});
-
-function startServer() {
-  const app = express();
-const cors = require('cors');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -53,17 +39,32 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
 }
 
 async function generatePDF(htmlContent) {
-  const browser = await playwright.chromium.launch(); 
+  const browser = await puppeteer.launch({ headless: "new" });
   const page = await browser.newPage();
 
-  await page.setContent(htmlContent);
+  const fullHTML = `
+    <html>
+      <head>
+        <title>Estimation Report</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+          }
+        </style>
+      </head>
+      <body>
+        ${htmlContent}
+      </body>
+    </html>
+  `;
+
+  await page.setContent(fullHTML);
   const pdfBuffer = await page.pdf();
 
   await browser.close();
 
   return pdfBuffer;
 }
-
 function calculateVisaCost(includeSpouse, numberOfChildren, isExpedited, legalFees, companyLicenseFee, registeredAdviceFees, accountsFee) {
   const applicationFee = 259;
   const healthcareSurcharge = 624;
@@ -441,7 +442,7 @@ app.post('/calculate', async (req, res) => {
       isExpedited,
       parsedCompanyLicenseFee,
       parsedRegisteredAdviceFees,
-      parsedAccountsFee,
+      parsedAccountsFee, 
     );
     const pdfBuffer = await generatePDF(htmlContent);
 
@@ -453,7 +454,7 @@ app.post('/calculate', async (req, res) => {
     console.error('Error: ', error);
     res.status(500).send('An error occurred during calculation and email sending.');
   }
-}); 
+});
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
