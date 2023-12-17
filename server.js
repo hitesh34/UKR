@@ -40,7 +40,7 @@ async function sendEmailWithPDF(pdfBuffer, subject, email) {
 
 async function generatePDF(htmlContent) {
   const browser = await puppeteer.launch({
-    executablePath: '/opt/render/.cache/puppeteer', // Use the bundled Chromium executable
+    executablePath: 'D:\\downloads\\Win_x64_1000027_chrome-win\\chrome-win\\chrome.exe',
     headless: false,
     args: ["--no-sandbox", "--disable-setuid-sandbox"]
   });
